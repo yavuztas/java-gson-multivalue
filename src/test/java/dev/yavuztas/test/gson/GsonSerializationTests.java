@@ -74,7 +74,7 @@ public class GsonSerializationTests {
 		Assert.assertEquals(ArticleModel.class, model.getClass());
 		Assert.assertEquals(model.getComments().getClass(), SingleAwareList.class);
 		Assert.assertEquals(model.getComments().get(0).getClass(), CommentModel.class);
-		
+
 		Assert.assertEquals(1, model.getId().longValue());
 		Assert.assertEquals("sample article", model.getName());
 
@@ -96,7 +96,7 @@ public class GsonSerializationTests {
 		Assert.assertEquals(ArticleModel.class, model.getClass());
 		Assert.assertEquals(model.getComments().getClass(), SingleAwareList.class);
 		Assert.assertEquals(model.getComments().get(0).getClass(), CommentModel.class);
-		
+
 		Assert.assertEquals(1, model.getId().longValue());
 		Assert.assertEquals("sample article", model.getName());
 

@@ -1,7 +1,6 @@
 package dev.yavuztas.samples.gson.generic;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gson.Gson;
@@ -46,7 +45,7 @@ public class SingleAwareListTypeAdapter extends TypeAdapter<SingleAwareList> {
 		 * Since we do not serialize CommentList with gson we can omit this part but
 		 * anyway we can simply implement by reusing listTypeAdapter
 		 */
-		listTypeAdapterForWrite.write(out, new ArrayList<>(list));
+		listTypeAdapterForWrite.write(out, list);
 
 	}
 
