@@ -8,6 +8,8 @@ import com.google.gson.TypeAdapter;
 import com.google.gson.TypeAdapterFactory;
 import com.google.gson.reflect.TypeToken;
 
+import dev.yavuztas.samples.gson.model.CommentModel;
+
 /**
  * Custom TypeAdapterFactory for GSON to handle {@link SingleAwareList}
  * converstion
@@ -20,19 +22,21 @@ public class SingleAwareListTypeAdapterFactory implements TypeAdapterFactory {
 	@Override
 	public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> type) {
 
-		if (!type.getRawType().equals(SingleAwareList.class)) {
+		// proceed only if the incoming type is a parameterized type
+		if (!ParameterizedType.class.isInstance(type.getType())) {
 			return null;
 		}
 
-		try {
-			Type elementType = ((ParameterizedType) type.getType()).getActualTypeArguments()[0];
-			Class<?> elementClassType = Class.forName(elementType.getTypeName());
-			return (TypeAdapter<T>) new SingleAwareListTypeAdapter(gson, elementClassType);
-		} catch (Exception e) {
-			e.printStackTrace();
+		ParameterizedType parameterizedType = ParameterizedType.class.cast(type.getType());
+		Type elementType = parameterizedType.getActualTypeArguments()[0];
+		Class rawElementType = Class.class.cast(elementType);
+
+		// and proceed only if the element type is CommentModel
+		if (!rawElementType.equals(CommentModel.class)) {
+			return null;
 		}
 
-		return null;
+		return (TypeAdapter<T>) new SingleAwareListTypeAdapter(gson, rawElementType);
 	}
 
 }

@@ -1,13 +1,16 @@
 package dev.yavuztas.samples.gson.model;
 
+import java.util.List;
+
+import com.google.gson.TypeAdapter;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.JsonAdapter;
 
-import dev.yavuztas.samples.gson.CommentList;
 import dev.yavuztas.samples.gson.CommentListTypeAdapterFactory;
 
 /**
- * Model class for response handling comments as static by {@link CommentList}
+ * Model class for response handling comments with static {@link TypeAdapter} by
+ * {@link CommentListTypeAdapterFactory}
  * 
  * @author Yavuz Tas
  *
@@ -22,7 +25,7 @@ public class ArticleModelStatic {
 
 	@JsonAdapter(CommentListTypeAdapterFactory.class)
 	@Expose
-	private CommentList comments;
+	private List<CommentModel> comments;
 
 	public Long getId() {
 		return id;
@@ -40,11 +43,11 @@ public class ArticleModelStatic {
 		this.name = name;
 	}
 
-	public CommentList getComments() {
+	public List<CommentModel> getComments() {
 		return comments;
 	}
 
-	public void setComments(CommentList comments) {
+	public void setComments(List<CommentModel> comments) {
 		this.comments = comments;
 	}
 

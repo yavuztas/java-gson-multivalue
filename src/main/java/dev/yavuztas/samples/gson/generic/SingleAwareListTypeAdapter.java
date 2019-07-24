@@ -1,58 +1,55 @@
 package dev.yavuztas.samples.gson.generic;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
-import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
 
 /**
- * Custom TypeAdapter for GSON to handle {@link SingleAwareList} converstion
+ * Custom TypeAdapter for GSON to handle single aware list converstion TODO
+ * perhaps we consider to get rid of SingleAwareList by changing it to
+ * ArrayList!
  * 
  * @author Yavuz Tas
  *
  */
-public class SingleAwareListTypeAdapter extends TypeAdapter<SingleAwareList> {
+public class SingleAwareListTypeAdapter extends TypeAdapter<List> {
 
 	private Gson gson;
 	private TypeAdapter<?> objectTypeAdapter;
-	private TypeAdapter<?> listTypeAdapter;
-	private TypeAdapter<List> listTypeAdapterForWrite;
+	private TypeAdapter<List> listTypeAdapter;
 
-	public SingleAwareListTypeAdapter(Gson gson, Class clazz) {
+	public SingleAwareListTypeAdapter(Gson gson, Class elementClassType) {
 
 		this.gson = gson;
-		this.objectTypeAdapter = gson.getAdapter(clazz);
-
-		// we need to get parameterized type here to protect type info in runtime so
-		// that Gson can convert to the correct type rather than LinkedTreeSet
-		TypeToken<?> parameterized = TypeToken.getParameterized(SingleAwareList.class, clazz);
-		this.listTypeAdapter = gson.getAdapter(parameterized);
-		// list adapter for only serializing do not need element type here since all the
-		// output will be String
-		this.listTypeAdapterForWrite = gson.getAdapter(new TypeToken<List>() {
-		});
+		// we need to carry element's type by passing the element class type to object
+		// type adapter otherwise gson deserialize our objects as LinkedTreeSet which we
+		// do not expect that.
+		this.objectTypeAdapter = gson.getAdapter(elementClassType);
+		// list adapter for only serializing do not need the type of element inside list
+		// here since all the output will be String at the end.
+		this.listTypeAdapter = gson.getAdapter(List.class);
 	}
 
 	@Override
-	public void write(JsonWriter out, SingleAwareList list) throws IOException {
+	public void write(JsonWriter out, List list) throws IOException {
 
 		/*
-		 * Since we do not serialize CommentList with gson we can omit this part but
-		 * anyway we can simply implement by reusing listTypeAdapter
+		 * Since we do not serialize our comment list with gson we can omit this part
+		 * but anyway we can simply implement by reusing gson list type adapter
 		 */
-		listTypeAdapterForWrite.write(out, list);
-
+		listTypeAdapter.write(out, list);
 	}
 
 	@Override
-	public SingleAwareList<?> read(JsonReader in) throws IOException {
+	public List read(JsonReader in) throws IOException {
 
-		SingleAwareList deserializedObject = new SingleAwareList();
+		List deserializedObject = new ArrayList<>();
 
 		// type of next token
 		JsonToken peek = in.peek();
@@ -60,16 +57,25 @@ public class SingleAwareListTypeAdapter extends TypeAdapter<SingleAwareList> {
 		// if the json field is single object just add this object to list as an
 		// element
 		if (JsonToken.BEGIN_OBJECT.equals(peek)) {
-			Object object = objectTypeAdapter.read(in);
-			deserializedObject.add(object);
+			deserializedObject.add(deserializeObject(in));
 		}
 
-		// if the json field is array then implement normal array deserialization
+		// if the json field is array then deserialize the objects inside
 		if (JsonToken.BEGIN_ARRAY.equals(peek)) {
-			List list = (List) listTypeAdapter.read(in);
-			deserializedObject.addAll(list);
+			in.beginArray();
+			while (in.hasNext()) {
+				if (JsonToken.BEGIN_OBJECT.equals(in.peek())) {
+					deserializedObject.add(deserializeObject(in));
+				}
+			}
+			in.endArray();
 		}
 
 		return deserializedObject;
+	}
+
+	private Object deserializeObject(JsonReader in) throws IOException {
+		// just use gson object type adapter
+		return objectTypeAdapter.read(in);
 	}
 }

@@ -1,6 +1,7 @@
 package dev.yavuztas.samples.gson;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gson.Gson;
@@ -13,12 +14,13 @@ import com.google.gson.stream.JsonWriter;
 import dev.yavuztas.samples.gson.model.CommentModel;
 
 /**
- * Custom TypeAdapter for GSON to handle {@link CommentList} converstion
+ * Custom TypeAdapter for GSON to handle list of {@link CommentModel}
+ * converstion
  * 
  * @author Yavuz Tas
  *
  */
-public class CommentListTypeAdapter extends TypeAdapter<CommentList> {
+public class CommentListTypeAdapter extends TypeAdapter<List> {
 
 	private Gson gson;
 	private TypeAdapter<CommentModel> objectTypeAdapter;
@@ -27,27 +29,25 @@ public class CommentListTypeAdapter extends TypeAdapter<CommentList> {
 	public CommentListTypeAdapter(Gson gson) {
 
 		this.gson = gson;
-		this.objectTypeAdapter = gson.getAdapter(new TypeToken<CommentModel>() {
-		});
+		this.objectTypeAdapter = gson.getAdapter(CommentModel.class);
 		this.listTypeAdapter = gson.getAdapter(new TypeToken<List<CommentModel>>() {
 		});
 	}
 
 	@Override
-	public void write(JsonWriter out, CommentList list) throws IOException {
+	public void write(JsonWriter out, List list) throws IOException {
 
 		/*
-		 * Since we do not serialize CommentList with gson we can omit this part but
-		 * anyway we can simply implement by reusing listTypeAdapter
+		 * Since we do not serialize our comment list with gson we can omit this part
+		 * but anyway we can simply implement by reusing listTypeAdapter
 		 */
 		listTypeAdapter.write(out, list);
-
 	}
 
 	@Override
-	public CommentList read(JsonReader in) throws IOException {
+	public List read(JsonReader in) throws IOException {
 
-		CommentList deserializedObject = new CommentList();
+		List<CommentModel> deserializedObject = new ArrayList<>();
 
 		// type of next token
 		JsonToken peek = in.peek();
@@ -55,16 +55,25 @@ public class CommentListTypeAdapter extends TypeAdapter<CommentList> {
 		// if the json field is single object just add this object to list as an
 		// element
 		if (JsonToken.BEGIN_OBJECT.equals(peek)) {
-			CommentModel object = objectTypeAdapter.read(in);
-			deserializedObject.add(object);
+			deserializedObject.add(deserializeObject(in));
 		}
 
 		// if the json field is array then implement normal array deserialization
 		if (JsonToken.BEGIN_ARRAY.equals(peek)) {
-			List<CommentModel> list = listTypeAdapter.read(in);
-			deserializedObject.addAll(list);
+			deserializedObject.addAll(deserializeList(in));
 		}
 
 		return deserializedObject;
 	}
+
+	private CommentModel deserializeObject(JsonReader in) throws IOException {
+		// just use gson object type adapter
+		return objectTypeAdapter.read(in);
+	}
+
+	private List<CommentModel> deserializeList(JsonReader in) throws IOException {
+		// just use gson list type adapter
+		return listTypeAdapter.read(in);
+	}
+
 }

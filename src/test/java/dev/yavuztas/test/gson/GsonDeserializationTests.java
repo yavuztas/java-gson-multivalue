@@ -7,8 +7,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
-import dev.yavuztas.samples.gson.CommentList;
-import dev.yavuztas.samples.gson.generic.SingleAwareList;
 import dev.yavuztas.samples.gson.model.ArticleModel;
 import dev.yavuztas.samples.gson.model.ArticleModelStatic;
 import dev.yavuztas.samples.gson.model.CommentModel;
@@ -74,7 +72,6 @@ public class GsonDeserializationTests {
 		ArticleModelStatic model = gson.fromJson(this.mockResponseMultiValue, ArticleModelStatic.class);
 
 		Assert.assertEquals(ArticleModelStatic.class, model.getClass());
-		Assert.assertEquals(model.getComments().getClass(), CommentList.class);
 		Assert.assertEquals(model.getComments().get(0).getClass(), CommentModel.class);
 
 		Assert.assertEquals(1, model.getId().longValue());
@@ -94,7 +91,6 @@ public class GsonDeserializationTests {
 		ArticleModelStatic model = gson.fromJson(this.mockResponseSingleValue, ArticleModelStatic.class);
 
 		Assert.assertEquals(ArticleModelStatic.class, model.getClass());
-		Assert.assertEquals(model.getComments().getClass(), CommentList.class);
 		Assert.assertEquals(model.getComments().get(0).getClass(), CommentModel.class);
 
 		Assert.assertEquals(1, model.getId().longValue());
@@ -112,7 +108,6 @@ public class GsonDeserializationTests {
 		ArticleModel model = gson.fromJson(this.mockResponseMultiValue, ArticleModel.class);
 
 		Assert.assertEquals(ArticleModel.class, model.getClass());
-		Assert.assertEquals(model.getComments().getClass(), SingleAwareList.class);
 		Assert.assertEquals(model.getComments().get(0).getClass(), CommentModel.class);
 
 		Assert.assertEquals(1, model.getId().longValue());
@@ -132,7 +127,6 @@ public class GsonDeserializationTests {
 		ArticleModel model = gson.fromJson(this.mockResponseSingleValue, ArticleModel.class);
 
 		Assert.assertEquals(ArticleModel.class, model.getClass());
-		Assert.assertEquals(model.getComments().getClass(), SingleAwareList.class);
 		Assert.assertEquals(model.getComments().get(0).getClass(), CommentModel.class);
 
 		Assert.assertEquals(1, model.getId().longValue());

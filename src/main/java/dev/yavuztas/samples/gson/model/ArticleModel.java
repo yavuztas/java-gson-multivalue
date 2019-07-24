@@ -1,14 +1,16 @@
 package dev.yavuztas.samples.gson.model;
 
+import java.util.List;
+
+import com.google.gson.TypeAdapter;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.JsonAdapter;
 
-import dev.yavuztas.samples.gson.generic.SingleAwareList;
 import dev.yavuztas.samples.gson.generic.SingleAwareListTypeAdapterFactory;
 
 /**
- * Model class for response handling comments as generic by
- * {@link SingleAwareList}
+ * Model class for response handling comments with generic {@link TypeAdapter}
+ * by {@link SingleAwareListTypeAdapterFactory}
  * 
  * @author Yavuz Tas
  *
@@ -23,7 +25,7 @@ public class ArticleModel {
 
 	@JsonAdapter(SingleAwareListTypeAdapterFactory.class)
 	@Expose
-	private SingleAwareList<CommentModel> comments;
+	private List<CommentModel> comments;
 
 	public Long getId() {
 		return id;
@@ -41,11 +43,11 @@ public class ArticleModel {
 		this.name = name;
 	}
 
-	public SingleAwareList<CommentModel> getComments() {
+	public List<CommentModel> getComments() {
 		return comments;
 	}
 
-	public void setComments(SingleAwareList<CommentModel> comments) {
+	public void setComments(List<CommentModel> comments) {
 		this.comments = comments;
 	}
 

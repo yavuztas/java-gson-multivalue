@@ -1,11 +1,13 @@
 package dev.yavuztas.test.gson;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
 
 import com.google.gson.Gson;
 
-import dev.yavuztas.samples.gson.generic.SingleAwareList;
 import dev.yavuztas.samples.gson.model.ArticleModel;
 import dev.yavuztas.samples.gson.model.CommentModel;
 import junit.framework.Assert;
@@ -33,7 +35,7 @@ public class GsonSerializationTests {
 		this.mockModelSingleValue.setId(1L);
 		this.mockModelSingleValue.setName("sample article");
 
-		SingleAwareList<CommentModel> comments = new SingleAwareList<>();
+		List<CommentModel> comments = new ArrayList<>();
 
 		CommentModel comment1 = new CommentModel();
 		comment1.setId(1L);
@@ -47,7 +49,7 @@ public class GsonSerializationTests {
 		this.mockModelMultiValue.setId(1L);
 		this.mockModelMultiValue.setName("sample article");
 
-		comments = new SingleAwareList<>();
+		comments = new ArrayList<>();
 
 		comment1 = new CommentModel();
 		comment1.setId(1L);
@@ -72,7 +74,6 @@ public class GsonSerializationTests {
 		ArticleModel model = gson.fromJson(json, ArticleModel.class);
 
 		Assert.assertEquals(ArticleModel.class, model.getClass());
-		Assert.assertEquals(model.getComments().getClass(), SingleAwareList.class);
 		Assert.assertEquals(model.getComments().get(0).getClass(), CommentModel.class);
 
 		Assert.assertEquals(1, model.getId().longValue());
@@ -94,7 +95,6 @@ public class GsonSerializationTests {
 		ArticleModel model = gson.fromJson(json, ArticleModel.class);
 
 		Assert.assertEquals(ArticleModel.class, model.getClass());
-		Assert.assertEquals(model.getComments().getClass(), SingleAwareList.class);
 		Assert.assertEquals(model.getComments().get(0).getClass(), CommentModel.class);
 
 		Assert.assertEquals(1, model.getId().longValue());
