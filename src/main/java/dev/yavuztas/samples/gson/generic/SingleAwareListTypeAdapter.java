@@ -20,62 +20,62 @@ import com.google.gson.stream.JsonWriter;
  */
 public class SingleAwareListTypeAdapter extends TypeAdapter<List> {
 
-	private Gson gson;
-	private TypeAdapter<?> objectTypeAdapter;
-	private TypeAdapter<List> listTypeAdapter;
+    private Gson gson;
+    private TypeAdapter<?> objectTypeAdapter;
+    private TypeAdapter<List> listTypeAdapter;
 
-	public SingleAwareListTypeAdapter(Gson gson, Class elementClassType) {
+    public SingleAwareListTypeAdapter(Gson gson, Class elementClassType) {
 
-		this.gson = gson;
-		// we need to carry element's type by passing the element class type to object
-		// type adapter otherwise gson deserialize our objects as LinkedTreeSet which we
-		// do not expect that.
-		this.objectTypeAdapter = gson.getAdapter(elementClassType);
-		// list adapter for only serializing do not need the type of element inside list
-		// here since all the output will be String at the end.
-		this.listTypeAdapter = gson.getAdapter(List.class);
-	}
+        this.gson = gson;
+        // we need to carry element's type by passing the element class type to object
+        // type adapter otherwise gson deserialize our objects as LinkedTreeSet which we
+        // do not expect that.
+        this.objectTypeAdapter = gson.getAdapter(elementClassType);
+        // list adapter for only serializing do not need the type of element inside list
+        // here since all the output will be String at the end.
+        this.listTypeAdapter = gson.getAdapter(List.class);
+    }
 
-	@Override
-	public void write(JsonWriter out, List list) throws IOException {
+    @Override
+    public void write(JsonWriter out, List list) throws IOException {
 
-		/*
-		 * Since we do not serialize our comment list with gson we can omit this part
-		 * but anyway we can simply implement by reusing gson list type adapter
-		 */
-		listTypeAdapter.write(out, list);
-	}
+        /*
+         * Since we do not serialize our comment list with gson we can omit this part
+         * but anyway we can simply implement by reusing gson list type adapter
+         */
+        listTypeAdapter.write(out, list);
+    }
 
-	@Override
-	public List read(JsonReader in) throws IOException {
+    @Override
+    public List read(JsonReader in) throws IOException {
 
-		List deserializedObject = new ArrayList<>();
+        List deserializedObject = new ArrayList<>();
 
-		// type of next token
-		JsonToken peek = in.peek();
+        // type of next token
+        JsonToken peek = in.peek();
 
-		// if the json field is single object just add this object to list as an
-		// element
-		if (JsonToken.BEGIN_OBJECT.equals(peek)) {
-			deserializedObject.add(deserializeObject(in));
-		}
+        // if the json field is single object just add this object to list as an
+        // element
+        if (JsonToken.BEGIN_OBJECT.equals(peek)) {
+            deserializedObject.add(deserializeObject(in));
+        }
 
-		// if the json field is array then deserialize the objects inside
-		if (JsonToken.BEGIN_ARRAY.equals(peek)) {
-			in.beginArray();
-			while (in.hasNext()) {
-				if (JsonToken.BEGIN_OBJECT.equals(in.peek())) {
-					deserializedObject.add(deserializeObject(in));
-				}
-			}
-			in.endArray();
-		}
+        // if the json field is array then deserialize the objects inside
+        if (JsonToken.BEGIN_ARRAY.equals(peek)) {
+            in.beginArray();
+            while (in.hasNext()) {
+                if (JsonToken.BEGIN_OBJECT.equals(in.peek())) {
+                    deserializedObject.add(deserializeObject(in));
+                }
+            }
+            in.endArray();
+        }
 
-		return deserializedObject;
-	}
+        return deserializedObject;
+    }
 
-	private Object deserializeObject(JsonReader in) throws IOException {
-		// just use gson object type adapter
-		return objectTypeAdapter.read(in);
-	}
+    private Object deserializeObject(JsonReader in) throws IOException {
+        // just use gson object type adapter
+        return objectTypeAdapter.read(in);
+    }
 }

@@ -17,38 +17,38 @@ import dev.yavuztas.samples.gson.generic.SingleAwareListTypeAdapterFactory;
  */
 public class ArticleModel {
 
-	@Expose
-	private Long id;
+    @Expose
+    private Long id;
 
-	@Expose
-	private String name;
+    @Expose
+    private String name;
 
-	@JsonAdapter(SingleAwareListTypeAdapterFactory.class)
-	@Expose
-	private List<CommentModel> comments;
+    @JsonAdapter(SingleAwareListTypeAdapterFactory.class)
+    @Expose
+    private List<CommentModel> comments;
 
-	public Long getId() {
-		return id;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public List<CommentModel> getComments() {
-		return comments;
-	}
+    public List<CommentModel> getComments() {
+        return comments;
+    }
 
-	public void setComments(List<CommentModel> comments) {
-		this.comments = comments;
-	}
+    public void setComments(List<CommentModel> comments) {
+        this.comments = comments;
+    }
 
 }

@@ -19,17 +19,17 @@ import dev.yavuztas.samples.gson.model.CommentModel;
  */
 public class CommentListTypeAdapterFactory implements TypeAdapterFactory {
 
-	@Override
-	public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> type) {
+    @Override
+    public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> type) {
 
-		// check the element type of list
-		ParameterizedType parameterizedType = ParameterizedType.class.cast(type.getType());
-		Type elementType = parameterizedType.getActualTypeArguments()[0];
-		if (!elementType.equals(CommentModel.class)) {
-			return null;
-		}
+        // check the element type of list
+        ParameterizedType parameterizedType = ParameterizedType.class.cast(type.getType());
+        Type elementType = parameterizedType.getActualTypeArguments()[0];
+        if (!elementType.equals(CommentModel.class)) {
+            return null;
+        }
 
-		return (TypeAdapter<T>) new CommentListTypeAdapter(gson);
-	}
+        return (TypeAdapter<T>) new CommentListTypeAdapter(gson);
+    }
 
 }
